@@ -1,0 +1,12 @@
+name: tb-curation
+channels:
+  - defaults
+dependencies:
+  - black
+  - openpyxl
+  - pandas
+  - pycountry
+  - python=3.10
+  - requests
+  - ydata-profiling
+  - snakemake
