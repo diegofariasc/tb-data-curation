@@ -1,45 +1,47 @@
 # Snakefile
 
-RAW_DIR = "data/raw"
-QUALITY_DIR = "data/quality"
-PROCESSED_DIR = "data/processed"
+DATASETS = [
+    ("https://api.worldbank.org/v2/en/indicator/SH.TBS.INCD?downloadformat=csv", "worldbank_tb"),
+]
 
-RAW_CSV = f"{RAW_DIR}/API_SH.TBS.INCD_DS2_en_csv_v2_9205.csv"
-LONG_CSV = f"{PROCESSED_DIR}/API_SH.TBS.INCD_DS2_en_csv_v2_9205_long.csv"
-QUALITY_REPORT = f"{QUALITY_DIR}/quality_report.txt"
+RAW_DIR = "data/raw"
+PROCESSED_DIR = "data/processed"
+QUALITY_DIR = "data/quality"
+
+URLS = {prefix: url for url, prefix in DATASETS}
 
 rule all:
     input:
-        LONG_CSV,
-        QUALITY_REPORT
+        expand(f"{PROCESSED_DIR}/{{prefix}}_long.csv", prefix=[p for _, p in DATASETS]),
+        expand(f"{QUALITY_DIR}/quality_report_{{prefix}}.txt", prefix=[p for _, p in DATASETS])
 
-# Rule 1: Download data
 rule acquire_data:
     output:
-        RAW_CSV
+        zip_file = f"{RAW_DIR}/{{prefix}}.zip",
+        csv_file = f"{RAW_DIR}/{{prefix}}.csv"
+    params:
+        url=lambda wildcards: URLS[wildcards.prefix]
     shell:
         """
-        python src/acquire_data.py
+        python src/acquire_data.py {params.url} {RAW_DIR} {wildcards.prefix}
         """
 
-# Rule 2: evaluate quality
 rule quality_assessment:
     input:
-        RAW_CSV
+        f"{RAW_DIR}/{{prefix}}.csv"
     output:
-        QUALITY_REPORT
+        f"{QUALITY_DIR}/quality_report_{{prefix}}.txt"
     shell:
         """
-        python src/quality_assessment.py
+        python src/quality_assessment.py {input} {QUALITY_DIR}
         """
 
-# Rule 3: format and clean
 rule clean_transform:
     input:
-        RAW_CSV
+        f"{RAW_DIR}/{{prefix}}.csv"
     output:
-        LONG_CSV
+        f"{PROCESSED_DIR}/{{prefix}}_long.csv"
     shell:
         """
-        python src/clean_transform.py
+        python src/clean_transform.py {input} {PROCESSED_DIR}
         """
