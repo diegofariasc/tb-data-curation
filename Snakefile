@@ -31,9 +31,18 @@ rule acquire_open_data:
 
         if url == "undp_hdi_api":
             subprocess.run(["python", "src/acquire_undp_hdi.py"], check=True)
+            
+            import src.utils.io_utils as io_utils
+            csv_path = os.path.join(RAW_DIR, "undp_hdi.csv")
+
+            io_utils.read_csv_metadata(csv_path, skiprows=0, source_name="undp_hdi")
+
             zip_path = output.zip_file
             if not os.path.exists(zip_path):
                 open(zip_path, "wb").close()
+            
+            if csv_path != output.csv_file:
+                os.replace(csv_path, output.csv_file)
         else:
             subprocess.run(["python", "src/acquire_open_data.py", url, RAW_DIR, prefix], check=True)
             extracted = glob.glob(os.path.join(RAW_DIR, f"{prefix}*"))
