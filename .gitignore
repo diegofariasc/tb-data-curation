@@ -17,3 +17,6 @@ docs/
 
 # Snakemake files
 .snakemake
+
+# Environment files
+*.env
