@@ -24,7 +24,8 @@ def assess_data_quality(csv_path: str, output_dir: str = "data/quality") -> dict
     ]
     df = df.loc[:, ~df.columns.str.contains("Unnamed")]
 
-    for col in df.columns[skiprows:]:
+    numeric_cols = df.select_dtypes(include=["number"]).columns
+    for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
     report = {

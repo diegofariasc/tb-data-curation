@@ -25,20 +25,29 @@ def clean_and_transform(
     ]
     df = df.loc[:, ~df.columns.str.contains("Unnamed")]
 
-    numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
-    metadata_cols = [col for col in df.columns if col not in numeric_cols]
-
-    df_long = df.melt(
-        id_vars=metadata_cols,
-        value_vars=numeric_cols,
-        var_name="Variable",
-        value_name="Value",
-    )
-    try:
-        df_long["Variable"] = pd.to_numeric(df_long["Variable"], errors="coerce")
-    except:
-        pass
-    df_long = df_long.dropna(subset=["Value"])
+    if set(["Variable", "Value"]).issubset(df.columns):
+        df_long = df.copy()
+    else:
+        numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
+        metadata_cols = [col for col in df.columns if col not in numeric_cols]
+        if numeric_cols:
+            df_long = df.melt(
+                id_vars=metadata_cols,
+                value_vars=numeric_cols,
+                var_name="Variable",
+                value_name="Value",
+            )
+            try:
+                df_long["Variable"] = pd.to_numeric(
+                    df_long["Variable"], errors="coerce"
+                )
+            except:
+                pass
+            df_long = df_long.dropna(subset=["Value"])
+        else:
+            df_long = df.copy()
+            df_long.rename(columns={df_long.columns[-1]: "Value"}, inplace=True)
+            df_long["Variable"] = ""
 
     output_path = os.path.join(
         output_dir, os.path.basename(csv_path).replace(".csv", "_long.csv")
