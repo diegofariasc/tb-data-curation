@@ -3,13 +3,19 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
+# HDRO API key from environment
 HDRO_API_KEY = os.getenv("HDRO_API_KEY")
 BASE_URL = "https://hdrdata.org/api/CompositeIndices/query"
 
 
 def get_countries():
+    """
+    Fetch list of country codes from the UNDP HDRO API.
+    Returns a list of ISO3 country codes.
+    """
     url = f"https://hdrdata.org/api/Metadata/Countries?apikey={HDRO_API_KEY}"
     response = requests.get(url)
     response.raise_for_status()
@@ -18,6 +24,11 @@ def get_countries():
 
 
 def get_hdi_indicator_code():
+    """
+    Fetch HDI indicator code from the UNDP HDRO API metadata.
+    Searches for the indicator containing 'Human Development Index'.
+    Raises ValueError if not found.
+    """
     url = f"https://hdrdata.org/api/Metadata/Indicators?apikey={HDRO_API_KEY}"
     response = requests.get(url)
     response.raise_for_status()
@@ -29,6 +40,9 @@ def get_hdi_indicator_code():
 
 
 def generate_years_string(start_year: int = 2000, end_year: int = 2024) -> str:
+    """
+    Generate a comma-separated string of years from start_year to end_year.
+    """
     return ",".join(str(year) for year in range(start_year, end_year + 1))
 
 
@@ -37,14 +51,20 @@ def acquire_undp_hdi(
     dest_dir: str = "data/raw",
     prefix: str = "undp_hdi",
 ) -> str:
-    os.makedirs(dest_dir, exist_ok=True)
+    """
+    Acquire HDI data from UNDP HDRO API for specified years and countries.
+    - Downloads data in batches to avoid API limits.
+    - Saves the combined dataset as a CSV in `dest_dir` with filename `{prefix}.csv`.
+    """
+    os.makedirs(dest_dir, exist_ok=True)  # ensure destination folder exists
 
-    countries = get_countries()
-    indicator_code = get_hdi_indicator_code()
+    countries = get_countries()  # fetch country codes
+    indicator_code = get_hdi_indicator_code()  # fetch HDI indicator code
 
     all_data = []
-    batch_size = 20
+    batch_size = 20  # number of countries per API request
 
+    # Fetch data in batches
     for i in range(0, len(countries), batch_size):
         batch_countries = countries[i : i + batch_size]
         params = {
@@ -64,6 +84,7 @@ def acquire_undp_hdi(
             "No data returned from the API. Check indicator and countries."
         )
 
+    # Convert to DataFrame and save CSV
     df = pd.DataFrame(all_data)
     csv_path = os.path.join(dest_dir, f"{prefix}.csv")
     df.to_csv(csv_path, index=False, encoding="utf-8")
@@ -72,4 +93,5 @@ def acquire_undp_hdi(
 
 
 if __name__ == "__main__":
+    # Run script to acquire HDI dataset
     acquire_undp_hdi()
