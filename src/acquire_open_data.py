@@ -31,7 +31,7 @@ def acquire_dataset(url: str, dest_dir: str, prefix: str) -> str:
 
     # Read metadata
     skiprows = detect_metadata_rows(fixed_csv)
-    read_csv_metadata(fixed_csv, skiprows=skiprows)
+    read_csv_metadata(fixed_csv, skiprows=skiprows, source_name=prefix)
 
     return main_csv
 

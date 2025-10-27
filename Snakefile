@@ -4,12 +4,12 @@ DATASETS = [
     {
         "url": "https://api.worldbank.org/v2/en/indicator/SH.TBS.INCD?downloadformat=csv",
         "prefix": "worldbank_tb",
-        "method": "zip",
+        "method": "zip"
     },
     {
         "url": "https://extranet.who.int/tme/generateCSV.asp?ds=outcomes",
         "prefix": "who_treatment_outcomes",
-        "method": "csvdirect",
+        "method": "csvdirect"
     },
     {   "url": "undp_hdi_api", 
         "prefix": "undp_hdi", 
@@ -79,6 +79,8 @@ rule acquire_data:
             if not os.path.exists(output.zip_file):
                 open(output.zip_file, "wb").close()
 
+            import src.utils.io_utils as io_utils
+            io_utils.read_csv_metadata(output.csv_file, skiprows=0, source_name=wildcards.prefix)
 
 rule quality_assessment:
     input:
@@ -94,5 +96,17 @@ rule clean_transform:
         f"{RAW_DIR}/{{prefix}}.csv",
     output:
         f"{PROCESSED_DIR}/{{prefix}}_long.csv",
-    shell:
-        "python src/clean_transform.py {input} {PROCESSED_DIR}"
+    run:
+        import subprocess
+
+        info = URLS[wildcards.prefix]
+        pivot_flag = info.get("pivot", "true")
+
+        subprocess.run([
+            "python",
+            "src/clean_transform.py",
+            input[0],
+            PROCESSED_DIR,
+            wildcards.prefix,
+            pivot_flag
+        ], check=True)
