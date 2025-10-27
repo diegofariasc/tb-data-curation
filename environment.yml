@@ -11,3 +11,4 @@ dependencies:
   - ydata-profiling
   - snakemake
   - python-dotenv
+  - snakefmt
