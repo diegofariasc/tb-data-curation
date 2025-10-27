@@ -7,10 +7,7 @@ env/
 venv/
 
 # Data outputs
-data/raw/
-data/quality/
-data/processed/
-docs/
+*.zip
 
 # Logs
 *.log

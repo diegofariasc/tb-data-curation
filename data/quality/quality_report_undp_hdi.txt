@@ -1,0 +1,6 @@
+rows: 5940
+columns: 6
+missing_values: 5940
+duplicate_rows: 0
+columns_with_missing: ['dimension']
+column_types: {'country': 'object', 'dimension': 'float64', 'index': 'object', 'indicator': 'object', 'year': 'int64', 'value': 'float64'}

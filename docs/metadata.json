@@ -1,0 +1,51 @@
+[
+  {
+    "source": "worldbank_health_expenditure_usd",
+    "file": "worldbank_health_expenditure_usd.csv",
+    "rows": 266,
+    "hash": "6720276d8719de7690bf1c9fb8486eb4",
+    "timestamp": "2025-10-27T22:37:09.861115"
+  },
+  {
+    "source": "worldbank_health_expenditure_gdp_percent",
+    "file": "worldbank_health_expenditure_gdp_percent.csv",
+    "rows": 266,
+    "hash": "7817060cf22864e5885505ca31c42dd7",
+    "timestamp": "2025-10-27T22:37:09.939455"
+  },
+  {
+    "source": "worldbank_gdp_per_capita_usd",
+    "file": "worldbank_gdp_per_capita_usd.csv",
+    "rows": 266,
+    "hash": "eebd3579865d7f7908666637542fdc26",
+    "timestamp": "2025-10-27T22:37:09.946722"
+  },
+  {
+    "source": "worldbank_population",
+    "file": "worldbank_population.csv",
+    "rows": 266,
+    "hash": "3349ac0f2646da9fdcee38d9211c928c",
+    "timestamp": "2025-10-27T22:37:09.956729"
+  },
+  {
+    "source": "worldbank_tb_incidence",
+    "file": "worldbank_tb_incidence.csv",
+    "rows": 266,
+    "hash": "464abb8322540e9a7187f37d8691fe4d",
+    "timestamp": "2025-10-27T22:37:12.414215"
+  },
+  {
+    "source": "who_treatment_outcomes",
+    "file": "who_treatment_outcomes.csv",
+    "rows": 6184,
+    "hash": "d9151dff4acbc487c862c01403f59d79",
+    "timestamp": "2025-10-27T22:37:13.038546"
+  },
+  {
+    "source": "undp_hdi",
+    "file": "undp_hdi.csv",
+    "rows": 5940,
+    "hash": "4a9622c82e96d36d3bdfd346037e56b2",
+    "timestamp": "2025-10-27T22:37:16.585889"
+  }
+]
