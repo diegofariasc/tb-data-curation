@@ -3,7 +3,27 @@
 DATASETS = [
     {
         "url": "https://api.worldbank.org/v2/en/indicator/SH.TBS.INCD?downloadformat=csv",
-        "prefix": "worldbank_tb",
+        "prefix": "worldbank_tb_incidence",
+        "method": "zip"
+    },
+    {
+        "url": "https://api.worldbank.org/v2/en/indicator/NY.GDP.PCAP.CD?downloadformat=csv",
+        "prefix": "worldbank_gdp_per_capita_usd",
+        "method": "zip"
+    },
+    {
+        "url": "https://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv",
+        "prefix": "worldbank_population",
+        "method": "zip"
+    },
+    {
+        "url": "https://api.worldbank.org/v2/en/indicator/SH.XPD.CHEX.PC.CD?downloadformat=csv",
+        "prefix": "worldbank_health_expenditure_usd",
+        "method": "zip"
+    },
+        {
+        "url": "https://api.worldbank.org/v2/en/indicator/SH.XPD.CHEX.GD.ZS?downloadformat=csv",
+        "prefix": "worldbank_health_expenditure_gdp_percent",
         "method": "zip"
     },
     {
@@ -15,6 +35,7 @@ DATASETS = [
         "prefix": "undp_hdi", 
         "method": "api"
     },
+    
 ]
 
 RAW_DIR = "data/raw"

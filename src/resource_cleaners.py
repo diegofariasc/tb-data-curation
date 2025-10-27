@@ -35,15 +35,15 @@ def clean_undp_hdi(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-def clean_worldbank_tb(df: pd.DataFrame) -> pd.DataFrame:
+def clean_worldbank_dataset(df: pd.DataFrame, indicator_name) -> pd.DataFrame:
     """
-    Clean World Bank TB incidence dataset:
+    Clean World Bank dataset:
     - Keep only 'Country Code', year columns, and 'Indicator Name/Code'
-    - Add 'indicator' column with value 'tb_incidence_per_hundred_thousand'
+    - Add 'indicator' column with given value
     - Rename columns to 'country_code', 'year', 'value'
     - Filter by INCLUDED_COUNTRY_CODES and years between EARLIEST_INCLUDED_START and LATEST_INCLUDED_YEAR
     """
-
+        
     # Keep relevant columns
     year_cols = [col for col in df.columns if col.isdigit()]
     df = df[["Country Code"] + year_cols].copy()
@@ -60,7 +60,7 @@ def clean_worldbank_tb(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # Add indicator column before value
-    df_long.insert(df_long.columns.get_loc("value"), "indicator", "tb_incidence_per_hundred_thousand")
+    df_long.insert(df_long.columns.get_loc("value"), "indicator", indicator_name)
 
     # Ensure proper types
     df_long["year"] = pd.to_numeric(df_long["year"], errors="coerce").astype("Int64")
@@ -74,6 +74,23 @@ def clean_worldbank_tb(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
     return df_long
+
+def clean_worldbank_population(df: pd.DataFrame) -> pd.DataFrame:
+    df_clean = clean_worldbank_dataset(df, "population")
+    df_clean["value"] = pd.to_numeric(df_clean["value"], errors="coerce").astype("Int64")
+    return df_clean
+
+def clean_worldbank_health_expenditure_gdp_percent(df: pd.DataFrame) -> pd.DataFrame:
+    return clean_worldbank_dataset(df, "health_expenditure_gdp_percent")
+
+def clean_worldbank_health_expenditure_usd(df: pd.DataFrame) -> pd.DataFrame:
+    return clean_worldbank_dataset(df, "worldbank_health_expenditure_usd")
+
+def clean_worldbank_tb_incidence(df: pd.DataFrame) -> pd.DataFrame:
+    return clean_worldbank_dataset(df, "tb_incidence_per_hundred_thousand")
+
+def clean_worldbank_gdp_per_capita_usd(df: pd.DataFrame) -> pd.DataFrame:
+    return clean_worldbank_dataset(df, "gdp_per_capita_usd")
 
 def clean_who_treatment_outcomes(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -129,6 +146,10 @@ def clean_who_treatment_outcomes(df: pd.DataFrame) -> pd.DataFrame:
 # Dictionary mapping resource name to cleaning function
 cleaners = {
     "undp_hdi": clean_undp_hdi,
-    "worldbank_tb": clean_worldbank_tb,
+    "worldbank_tb_incidence": clean_worldbank_tb_incidence,
+    "worldbank_population": clean_worldbank_population,
+    "worldbank_gdp_per_capita_usd": clean_worldbank_gdp_per_capita_usd,
     "who_treatment_outcomes": clean_who_treatment_outcomes,
+    "worldbank_health_expenditure_gdp_percent": clean_worldbank_health_expenditure_gdp_percent,
+    "worldbank_health_expenditure_usd": clean_worldbank_health_expenditure_usd
 }
